@@ -35,7 +35,7 @@ public class DefinitionParserTest {
     assertEquals("Language should be parser out", 
         "frist", DefinitionParser.getSynonym("# {{present participle of|frist|lang=en}}").get());
   }
-  
+
   @Test
   public void testAlternateForms() {
     assertEquals("Alternate forms should be found", 
