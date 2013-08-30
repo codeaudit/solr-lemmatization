@@ -6,6 +6,11 @@ import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+
 class LemmatizationSpec {
   private final URL dictionaryUrl;
   private final File targetFile;
@@ -14,6 +19,7 @@ class LemmatizationSpec {
   private final boolean includeNouns;
   private final boolean includeVariants;
   private final boolean redownload;
+  private final Multimap<String, String> extraSynonyms;
 
   private LemmatizationSpec(Builder builder) {
     this.dictionaryUrl = builder.dictionaryUrl;
@@ -23,6 +29,7 @@ class LemmatizationSpec {
     this.includeNouns = builder.includeNouns;
     this.includeVariants = builder.includeVariants;
     this.redownload = builder.redownload;
+    this.extraSynonyms = builder.extraSynonyms;
   }
 
   public static class Builder {
@@ -34,6 +41,7 @@ class LemmatizationSpec {
     private boolean includeNouns = true;
     private boolean includeVariants = true;
     private boolean redownload = false;
+    private Multimap<String, String> extraSynonyms = HashMultimap.create();
 
     public Builder(URL dictionaryUrl, File targetFile) {
       this.dictionaryUrl = dictionaryUrl;
@@ -41,7 +49,7 @@ class LemmatizationSpec {
     }
 
     public Builder languages(Collection<String> languages) {
-      this.languages = languages; return this;
+      this.languages = ImmutableSet.copyOf(languages); return this;
     }
 
     public Builder includeVerbs(boolean verbs) {
@@ -55,9 +63,13 @@ class LemmatizationSpec {
     public Builder includeVariants(boolean variants) {
       this.includeVariants = variants; return this;
     }
-    
+
     public Builder redownload(boolean redownload) {
       this.redownload = redownload; return this;
+    }
+
+    public Builder extraSynonyms(Multimap<String, String> synonyms) {
+      this.extraSynonyms = ImmutableListMultimap.copyOf(synonyms); return this;
     }
 
     public LemmatizationSpec build() {
@@ -88,9 +100,13 @@ class LemmatizationSpec {
   public boolean isIncludeVariants() {
     return includeVariants;
   }
-  
+
   public boolean isRedownload() {
     return redownload;
+  }
+
+  public Multimap<String, String> getExtraSynonyms() {
+    return extraSynonyms;
   }
 
 }

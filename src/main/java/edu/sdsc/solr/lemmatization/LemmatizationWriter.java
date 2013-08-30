@@ -29,7 +29,6 @@ import com.google.common.io.LineProcessor;
 public class LemmatizationWriter {
 
   private final File uncompressedDictionary;
-  private final Multimap<String, String> synonyms = HashMultimap.create();
   private final LemmatizationSpec spec;
 
   public LemmatizationWriter(LemmatizationSpec spec) {
@@ -37,10 +36,10 @@ public class LemmatizationWriter {
     this.spec = spec;
   }
 
-  public void writeLemmatization() throws IOException {
-    if (spec.isRedownload() || !uncompressedDictionary.exists()) {
-      downloadDictionary(spec.getDictionaryUrl(), uncompressedDictionary);
-    }
+  Multimap<String, String> buildSynonymMap() throws IOException {
+    final Multimap<String, String> synonyms = HashMultimap.create();
+    synonyms.putAll(spec.getExtraSynonyms());
+
     Files.readLines(uncompressedDictionary, Charsets.UTF_8, new LineProcessor<Void>() {
 
       @Override
@@ -59,9 +58,16 @@ public class LemmatizationWriter {
 
       @Override
       public Void getResult() { return null; }
-
     });
+    return synonyms;
+  }
 
+  public void writeLemmatization() throws IOException {
+    if (spec.isRedownload() || !uncompressedDictionary.exists()) {
+      downloadDictionary(spec.getDictionaryUrl(), uncompressedDictionary);
+    }
+
+    Multimap<String, String> synonyms = buildSynonymMap();
 
     try (OutputStreamWriter writer = 
         new OutputStreamWriter(new FileOutputStream(spec.getTargetFile()), Charset.forName("UTF-8").newEncoder())) {
