@@ -2,10 +2,8 @@ package edu.sdsc.solr.lemmatization;
 
 import static com.google.common.collect.Lists.newArrayList;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
