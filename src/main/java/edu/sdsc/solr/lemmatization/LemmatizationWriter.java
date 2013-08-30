@@ -28,12 +28,16 @@ import com.google.common.io.LineProcessor;
 
 public class LemmatizationWriter {
 
-  private final File uncompressedDictionary;
+  private File uncompressedDictionary;
   private final LemmatizationSpec spec;
 
   public LemmatizationWriter(LemmatizationSpec spec) {
     uncompressedDictionary = new File(FileUtils.getTempDirectory(), "wiktionary.tsv");
     this.spec = spec;
+  }
+
+  void setUncompressedDictionary(File uncompressedDictionary) {
+    this.uncompressedDictionary = uncompressedDictionary;
   }
 
   Multimap<String, String> buildSynonymMap() throws IOException {
