@@ -32,24 +32,25 @@ public class LemmatizationWriter {
   private final Multimap<String, String> synonyms = HashMultimap.create();
   private final LemmatizationSpec spec;
 
-  static class LemmatizationSpec {
-    URL dictionaryUrl;
-    File targetFile;
-  }
-
   public LemmatizationWriter(LemmatizationSpec spec) {
     uncompressedDictionary = new File(FileUtils.getTempDirectory(), "wiktionary.tsv");
     this.spec = spec;
   }
 
   public void writeLemmatization() throws IOException {
-    downloadDictionary(spec.dictionaryUrl, uncompressedDictionary);
+    if (spec.isRedownload() || !uncompressedDictionary.exists()) {
+      downloadDictionary(spec.getDictionaryUrl(), uncompressedDictionary);
+    }
     Files.readLines(uncompressedDictionary, Charsets.UTF_8, new LineProcessor<Void>() {
 
       @Override
       public boolean processLine(String line) throws IOException {
         List<String> cols = newArrayList(Splitter.on('\t').split(line));
-        Optional<String> synonym = DefinitionParser.getSynonym(cols.get(3));
+        String language = cols.get(0);
+        if (!spec.getLanguages().contains(language)) {
+          return true;
+        }
+        Optional<String> synonym = DefinitionParser.getSynonym(cols.get(3), spec);
         if (synonym.isPresent()) {
           synonyms.put(synonym.get(), cols.get(1).trim());
         }
@@ -60,20 +61,18 @@ public class LemmatizationWriter {
       public Void getResult() { return null; }
 
     });
-    
-   
+
+
     try (OutputStreamWriter writer = 
-        new OutputStreamWriter(new FileOutputStream(spec.targetFile), Charset.forName("UTF-8").newEncoder())) {
+        new OutputStreamWriter(new FileOutputStream(spec.getTargetFile()), Charset.forName("UTF-8").newEncoder())) {
       writeSynonyms(synonyms, writer);
       writer.flush();
     }
   }
 
   static void downloadDictionary(URL definitionUrl, File target) throws IOException {
-    if (!target.exists()) {
-      try (InputStream is = new GZIPInputStream(definitionUrl.openConnection().getInputStream())) {
-        FileUtils.copyInputStreamToFile(is, target);
-      }
+    try (InputStream is = new GZIPInputStream(definitionUrl.openConnection().getInputStream())) {
+      FileUtils.copyInputStreamToFile(is, target);
     }
   }
 
