@@ -48,26 +48,50 @@ class LemmatizationSpec {
       this.targetFile = targetFile;
     }
 
+    /***
+     * @param languages The languages to include during the transformation
+     * @return
+     */
     public Builder languages(Collection<String> languages) {
       this.languages = ImmutableSet.copyOf(languages); return this;
     }
 
+    /***
+     * @param verbs If verb forms should be included
+     * @return
+     */
     public Builder includeVerbs(boolean verbs) {
       this.includeVerbs = verbs; return this;
     }
 
+    /***
+     * @param nouns If noun forms should be included
+     * @return
+     */
     public Builder includeNouns(boolean nouns) {
       this.includeNouns = nouns; return this;
     }
 
+    /***
+     * @param variants If other variants (alternate spellings) should be included 
+     * @return
+     */
     public Builder includeVariants(boolean variants) {
       this.includeVariants = variants; return this;
     }
 
+    /***
+     * @param redownload If the wiktionary source should be forced to redownload
+     * @return
+     */
     public Builder redownload(boolean redownload) {
       this.redownload = redownload; return this;
     }
 
+    /***
+     * @param synonyms Extra synonyms to add to the dictionary based map. Useful for domain specific additions.
+     * @return
+     */
     public Builder extraSynonyms(Multimap<String, String> synonyms) {
       this.extraSynonyms = ImmutableListMultimap.copyOf(synonyms); return this;
     }

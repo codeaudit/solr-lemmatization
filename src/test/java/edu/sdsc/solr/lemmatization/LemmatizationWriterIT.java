@@ -13,7 +13,7 @@ public class LemmatizationWriterIT {
   public void testWriteLemmatization() throws IOException {
     URL dictionaryUrl = new URL("http://toolserver.org/~enwikt/definitions/enwikt-defs-latest-en.tsv.gz");
     File lemmaFile = new File(FileUtils.getTempDirectory(), "lemmatization.txt");
-    LemmatizationSpec spec = new LemmatizationSpec.Builder(dictionaryUrl, lemmaFile).build();
+    LemmatizationSpec spec = new LemmatizationSpec.Builder(dictionaryUrl, lemmaFile).redownload(true).build();
     LemmatizationWriter writer = new LemmatizationWriter(spec);
     writer.writeLemmatization();
   }

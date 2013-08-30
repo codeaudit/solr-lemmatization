@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import com.google.common.base.Optional;
 
-public class DefinitionParser {
+class DefinitionParser {
 
   static final Pattern pluralPattern = 
       Pattern.compile("# \\{\\{plural of\\|(.*)\\}\\.?\\}", Pattern.CASE_INSENSITIVE);
