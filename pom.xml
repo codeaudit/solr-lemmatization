@@ -23,7 +23,27 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Solr Lemmatization</name>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+	
 	<inceptionYear>2013</inceptionYear>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>synergian-repo</id>
+			<url>https://raw.github.com/synergian/wagon-git/releases</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>bitbucket</id>
+			<name>Bitbucket Maven Repo</name>
+			<url>git:master://git@bitbucket.org:condit/maven-repo.git</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -51,6 +71,7 @@
 						<exclude>**/README.md</exclude>
 						<exclude>src/test/resources/**</exclude>
 						<exclude>src/main/resources/**</exclude>
+						<exclude>wagon-git/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -61,7 +82,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>ar.com.synergian</groupId>
+				<artifactId>wagon-git</artifactId>
+				<version>0.1.6</version>
+			</extension>
+		</extensions>
 	</build>
 
 	<dependencies>
